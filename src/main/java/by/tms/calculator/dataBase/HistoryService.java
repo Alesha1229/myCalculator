@@ -50,7 +50,6 @@ public class HistoryService implements OperationStorage {
         return operations;
     }
 
-
     private static Operation getOperationResultSet(ResultSet rs) throws SQLException {
         Operation operation = new Operation();
         operation.setNum1(rs.getDouble("NUM1"));
