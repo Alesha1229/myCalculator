@@ -1,6 +1,9 @@
 package by.tms.calculator.web.servlet;
 
+import by.tms.calculator.dataBase.RegAndLoginService;
+import by.tms.calculator.entity.User;
 import by.tms.calculator.service.UserService;
+import by.tms.calculator.storage.RegistrationStorage;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +16,8 @@ import java.io.IOException;
 public class RegistrationServlet extends HttpServlet {
 
   private final UserService userService = new UserService();
+  private final RegistrationStorage registrationStorage = new RegAndLoginService();
+
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,6 +31,8 @@ public class RegistrationServlet extends HttpServlet {
     String password = req.getParameter("password");
 
     userService.create(name, username, password);
+    User user = new User(name, username, password);
+    registrationStorage.save(user);
 
     resp.sendRedirect("/");
   }

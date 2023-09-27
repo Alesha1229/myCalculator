@@ -14,7 +14,7 @@
 <body>
 
 <c:if test="${sessionScope.currentUser != null}">
-    <h1>Hello ${sessionScope.currentUser.name}</h1>
+    <h1>Hello ${sessionScope.currentUser.getName()}</h1>
     <br>
     <a href="/validator">Validator</a>
     <a href="/calculator">Calculator</a>

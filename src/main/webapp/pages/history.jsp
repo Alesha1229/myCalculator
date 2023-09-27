@@ -13,7 +13,7 @@
 </head>
 <body>
 <ul>
-    <c:forEach items="${requestScope.items}" var="item">
+    <c:forEach items="${requestScope.getHistory}" var="item">
         <li>${item}</li>
     </c:forEach>
 </ul>

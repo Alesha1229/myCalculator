@@ -2,6 +2,7 @@ package by.tms.calculator.dataBase;
 
 import by.tms.calculator.entity.Operation;
 import by.tms.calculator.entity.User;
+import by.tms.calculator.service.UserService;
 import by.tms.calculator.storage.OperationStorage;
 
 import java.sql.*;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryService implements OperationStorage {
-    private static final String INSERT_QUERY = "INSERT INTO operations (NUM1, NUM2, TYPE, RESULT, AUTHOR) values (?, ?, ?, ?, ?)";
+    private static final String INSERT_QUERY_OPERATIONS = "INSERT INTO operations (NUM1, NUM2, TYPE, RESULT, AUTHOR) values (?, ?, ?, ?, ?)";
     private static final String FIND_BY_ID_QUERY = "SELECT * from operations where AUTHOR = ?";
 
     public void save(Operation operation) {
@@ -19,13 +20,14 @@ public class HistoryService implements OperationStorage {
             throw new RuntimeException(e);
         }
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/history", "root", "root");
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_QUERY_OPERATIONS)) {
             setOperationToPreparedStatement(operation, preparedStatement);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public List<Operation> findAllByAuthorUsername(String username) {

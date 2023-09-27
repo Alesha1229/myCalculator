@@ -1,7 +1,7 @@
 package by.tms.calculator.web.servlet;
 
+import by.tms.calculator.dataBase.RegAndLoginService;
 import by.tms.calculator.entity.User;
-import by.tms.calculator.service.UserService;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,12 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Optional;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-  UserService userService = UserService.getInstance();
+
+  RegAndLoginService loginService = new RegAndLoginService();
+  String username = "";
+  String password = "";
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -23,22 +25,19 @@ public class LoginServlet extends HttpServlet {
 
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    String username = req.getParameter("username");
-    String password = req.getParameter("password");
+    username = req.getParameter("username");
+    password = req.getParameter("password");
 
-    Optional<User> byUsername = userService.getByUsername(username);
-    if (byUsername.isPresent()) {
-      User user = byUsername.get();
-      if(user.getPassword().equals(password)) {
+
+      if (loginService.load(username, password) != "false") {
+        User user = new User(loginService.load(username, password), username, password);
         req.getSession().setAttribute("currentUser", user);
         resp.sendRedirect("/");
         return;
       } else {
-        req.setAttribute("message", "Wrong password!");
+        req.setAttribute("message", "Wrong!");
       }
-    } else {
-      req.setAttribute("message", "User not found!");
+
+      getServletContext().getRequestDispatcher("/pages/login.jsp").forward(req, resp);
     }
-    getServletContext().getRequestDispatcher("/pages/login.jsp").forward(req, resp);
   }
-}

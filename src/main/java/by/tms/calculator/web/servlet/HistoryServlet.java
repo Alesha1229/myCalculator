@@ -1,5 +1,6 @@
 package by.tms.calculator.web.servlet;
 
+import by.tms.calculator.dataBase.HistoryService;
 import by.tms.calculator.entity.Operation;
 import by.tms.calculator.entity.User;
 import by.tms.calculator.entity.Validation;
@@ -18,25 +19,14 @@ import java.util.List;
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
 
-  private final OperationService operationService = new OperationService();
-  private final ValidationService validationService = new ValidationService();
+  HistoryService getHistory = new HistoryService();
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     User currentUser = (User) req.getSession().getAttribute("currentUser");
-    List<Operation> history;
-    try {
-      history = operationService.getHistory(currentUser);
-
-    } catch (ClassNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-    List<Validation> history1 = validationService.getHistory(currentUser);
-    req.setAttribute("items", history);
-    req.setAttribute("items1", history1);
-    System.out.println("history " + history);
-    System.out.println("currentUser: " + currentUser);
+    getHistory.findAllByAuthorUsername(currentUser.getName());
     getServletContext().getRequestDispatcher("/pages/history.jsp").forward(req, resp);
+
 
   }
 }
